@@ -19,11 +19,8 @@ namespace DataAccesLayer.Repostitories
         }
         public async Task CreateAsync(OrderDetailDTO item)
         {
-            //var result = await _dbContext.OrderDetails.FirstOrDefaultAsync(o=>o.)
-            //if (!_dbContext.OrderDetails.Contains(item))
-                await _dbContext.OrderDetails.AddAsync(item);
+            await _dbContext.OrderDetails.AddAsync(item);
         }
-
         public async Task DeleteAsync(int id)
         {
             var orderDetail = await _dbContext.OrderDetails.FirstOrDefaultAsync(p => p.Id == id);
@@ -33,45 +30,45 @@ namespace DataAccesLayer.Repostitories
 
         public async Task<OrderDetailDTO> FindAsync(Expression<Func<OrderDetailDTO, bool>> predicate)
         {
-            var orderDetail = await _dbContext.OrderDetails.FirstOrDefaultAsync(predicate);
-            return orderDetail;
+            return await _dbContext.OrderDetails.Where(predicate).FirstOrDefaultAsync();
         }
 
-        public async Task<OrderDetailDTO> GetAsync(int id)
+        public async Task<OrderDetailDTO> FindById(int id)
         {
             var orderDetail = await _dbContext.OrderDetails.FindAsync(id);
             return orderDetail;
         }
 
-        //public async Task<IEnumerable<OrderDetailDTO>> GetAll()
-        //{
-        //    var q = from item in _dbContext.OrderDetails
-        //            select item;
-        //    return await q.ToListAsync();
-        //}
         public IQueryable<OrderDetailDTO> GetAll()
         {
             return _dbContext.OrderDetails;
         }
-
-
-
-        public async Task UpdateAsync(OrderDetailDTO item)
+        public void Update(OrderDetailDTO item)
         {
-            var result = await _dbContext.OrderDetails.FirstOrDefaultAsync(o => o.OrderId == item.OrderId);
-            
-
-
+            _dbContext.OrderDetails.Update(item);
         }
-
-        public void DeleteAllByUserId(int orderId)
-        {
-            //_dbContext.OrderDetails.RemoveRange(_dbContext.OrderDetails.Where(o => o.OrderId == orderId));
-        }
-
+      
         public async Task AddRangeAsync(IEnumerable<OrderDetailDTO> entities)
         {
             await _dbContext.OrderDetails.AddRangeAsync(entities);
         }
+
+        public void DeleteRange(Expression<Func<OrderDetailDTO, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+            
+
     }
+
 }
+       
+
+
+
+
+
+            
+
+
+

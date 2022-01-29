@@ -25,8 +25,6 @@ namespace DataAccesLayer.Repostitories
 
         public async Task CreateAsync(Cart item)
         {
-            //var res = await _dbContext.Carts.FindAsync(item);
-            //if (res == null)
                 await _dbContext.AddAsync(item);
         }
 
@@ -44,8 +42,7 @@ namespace DataAccesLayer.Repostitories
 
         public async Task<Cart> FindAsync(Expression<Func<Cart, bool>> predicate)
         {
-            var res = await _dbContext.Carts.FirstOrDefaultAsync(predicate);
-            return res;
+            return await _dbContext.Carts.Where(predicate).FirstOrDefaultAsync();
         }
 
         public IQueryable<Cart> GetAll()
@@ -53,7 +50,7 @@ namespace DataAccesLayer.Repostitories
             return _dbContext.Carts;
         }
 
-        public async Task<Cart> GetAsync(int id)
+        public async Task<Cart> FindById(int id)
         {
             return await _dbContext.Carts.FindAsync(id);
         }
@@ -63,9 +60,17 @@ namespace DataAccesLayer.Repostitories
             _dbContext.Carts.RemoveRange(_dbContext.Carts.Where(c => c.ProductId == id));
         }
 
-        public Task UpdateAsync(Cart item)
+        public void Update(Cart item)
         {
-            throw new NotImplementedException();
+            _dbContext.Carts.Update(item);
+        }
+
+        public void DeleteRange(Expression<Func<Cart, bool>> predicate)
+        {
+            _dbContext.Carts.RemoveRange(_dbContext.Carts.Where(predicate));
         }
     }
 }
+            
+           
+

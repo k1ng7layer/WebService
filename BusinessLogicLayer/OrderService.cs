@@ -64,19 +64,20 @@ namespace BusinessLogicLayer
 
         public async Task DeleteUserCart(int userId)
         {
-            _dB.Carts.DeleteAllByUserId(userId);
+            _dB.Carts.RemoveRangeByProductId(userId);
             await _dB.SaveAsync();
         }
 
         public async void DeleteOrderAsync(int orderId)
         {
             await _dB.Carts.DeleteAsync(orderId);
+            await _dB.SaveAsync();
         }
 
         public async Task<OrderBL> FindOrderByIdAsync(int orderId)
         {
             
-            return Mapper.Map<OrderBL>(await _dB.Orders.GetAsync(orderId));
+            return Mapper.Map<OrderBL>(await _dB.Orders.FindById (orderId));
         }
 
         public async Task<List<CartBL>> FindUserCart(int userId)

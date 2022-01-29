@@ -10,17 +10,17 @@ namespace DataAccesLayer.Interfaces
     public interface IRepository<T> where T:class
     {
         IQueryable<T> GetAll();
-        
-        Task<T> GetAsync(int id);
+        Task<T> FindById(int id);
         Task<T> FindAsync(Expression<Func<T, bool>> predicate);
         Task CreateAsync(T item);
-        
-        Task UpdateAsync(T item);
+        void Update(T item);
         Task DeleteAsync(int id);
-
-        void DeleteAllByUserId(int userId);
+        void DeleteRange(Expression<Func<T,bool>> predicate);
         Task AddRangeAsync(IEnumerable<T> entities);
-
     }
 }
+        
+        
+
+
 

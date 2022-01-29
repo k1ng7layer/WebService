@@ -78,7 +78,7 @@ namespace BusinessLogicLayer
                 res.Password = user.Password;
                 res.RoleId = user.RoleId;
             }
-            await DB.Users.UpdateAsync(res);
+            DB.Users.Update(res);
             await DB.SaveAsync();
         }
 

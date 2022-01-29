@@ -29,7 +29,7 @@ namespace WebService.Controllers
             return View();
         }
 
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [Route("Remove")]
         public async Task<ActionResult> RemoveProduct(int id)
@@ -44,13 +44,7 @@ namespace WebService.Controllers
             return Ok("product removed");
         }
 
-        //[HttpGet]
-        //[Route("Find")]
-        //public JsonResult GetProduct(int id)
-        //{
-        //    var prod = Mapper.Map<ProductModel>(ProductService.FindProductAsync(id));
-        //    return Json(prod);
-        //}
+     
         [HttpGet]
         [Route("Find")]
         public async Task<ActionResult> GetProduct(int id)
@@ -72,11 +66,50 @@ namespace WebService.Controllers
                 
 
             await ProductService.AddProductAsync(product);
-            return new ObjectResult(product);
+            return new ObjectResult($"product added {product}");
         }
 
+        [HttpGet]
+        [Route("All")]
+        public  ActionResult ShowAllProducts()
+        {
+            var products = ProductService.GetAll();
+            return new ObjectResult(products);
+        }
 
+        [HttpPost]
+        [Route("Update")]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult>UpdateProduct(ProductModel product)
+        {
+            if (string.IsNullOrEmpty(product.ProductName))
+            {
+                ModelState.AddModelError("product name", "invalid prod");
+            }
 
+            if (ModelState.IsValid)
+            {
+                ProductBL productToUpdate = new ProductBL()
+                {
+                    Id = product.Id,
+                    Price = product.Price,
+                    ProductName = product.ProductName,
+                    Category = product.Category,
+                    Count = product.Count,
+                    OnSale = product.OnSale,
+                };
+                await ProductService.UpdateProductAsync(productToUpdate);
+                return Ok("product updated");
+            }
 
+            return new ObjectResult(product);
+            
+     
+        }
     }
+        
+
+
+
+
 }

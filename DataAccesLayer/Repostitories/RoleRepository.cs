@@ -18,10 +18,12 @@ namespace DataAccesLayer.Repostitories
         {
             _dbContext = db;
         }
+
         public async Task CreateAsync(RoleDTO item)
         {
-            var result = await _dbContext.Roles.FirstOrDefaultAsync(r => r.Name == item.Name);
-            await _dbContext.Roles.AddAsync(item);
+            var result = await _dbContext.Roles.Where(r => r.Name == item.Name).FirstOrDefaultAsync();
+            if(result==null)
+                await _dbContext.Roles.AddAsync(item);
         }
          
         public async Task DeleteAsync(int id)
@@ -33,22 +35,12 @@ namespace DataAccesLayer.Repostitories
 
         public async Task<RoleDTO> FindAsync(Expression<Func<RoleDTO, bool>> predicate)
         {
-            return await _dbContext.Roles.FirstOrDefaultAsync(predicate);
+            return await _dbContext.Roles.Where(predicate).FirstOrDefaultAsync();
         }
             
-
-        public async Task<RoleDTO> GetAsync(int id)
+        public async Task<RoleDTO> FindById(int id)
         {
             return await _dbContext.Roles.FindAsync(id);
-        }
-
-      
-
-      
-
-        public async Task UpdateAsync(RoleDTO item)
-        {
-            
         }
 
         public IQueryable<RoleDTO> GetAll()
@@ -56,14 +48,21 @@ namespace DataAccesLayer.Repostitories
             return _dbContext.Roles;
         }
 
-        public void DeleteAllByUserId(int userId)
-        {
-            
-        }
-
         public async Task AddRangeAsync(IEnumerable<RoleDTO> entities)
         {
             await _dbContext.Roles.AddRangeAsync(entities);
         }
+
+        public void Update(RoleDTO item)
+        {
+            _dbContext.Roles.Update(item);
+        }
+
+        public void DeleteRange(Expression<Func<RoleDTO, bool>> predicate)
+        {
+            _dbContext.Roles.RemoveRange(_dbContext.Roles.Where(predicate));
+        }
     }
 }
+
+      

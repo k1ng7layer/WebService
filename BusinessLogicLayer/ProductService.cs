@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using DataAccesLayer.Entities;
+using System.Web.Mvc;
 
 namespace BusinessLogicLayer
 {
@@ -21,6 +22,7 @@ namespace BusinessLogicLayer
             Db = unitOfWork;
             Mapper = mapper;
         }
+
         public async Task AddProductAsync(ProductBL product)
         {
             if (product != null)
@@ -31,7 +33,6 @@ namespace BusinessLogicLayer
             }
         }
             
-
         public async Task DeleteProductAsync(int id)
         {
             await Db.Product.DeleteAsync(id);
@@ -40,13 +41,33 @@ namespace BusinessLogicLayer
 
         public async Task<ProductBL> FindProductAsync(int id)
         {
-            var product = Mapper.Map<ProductBL>(await Db.Product.GetAsync(id));
+            var product = Mapper.Map<ProductBL>(await Db.Product.FindById(id));
             return product;
         }
+
         public IEnumerable<ProductBL> GetAll()
         {
             return Mapper.Map <IEnumerable<ProductBL>> ( Db.Product.GetAll());
         }
+
+        public async Task UpdateProductAsync(ProductBL product)
+        {
+           
+            var productDto = await Db.Product.FindById(product.Id);
+            if (productDto != null)
+            {
+                productDto.OnSale = product.OnSale;
+                productDto.Category = product.Category;
+                productDto.Price = product.Price;
+                productDto.ProductName = product.ProductName;
+                productDto.Count = product.Count;
+                Db.Product.Update(productDto);
+                await Db.SaveAsync();
+            }
+        }
+
+
+
     }
 }
 

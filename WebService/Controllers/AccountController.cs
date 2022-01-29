@@ -83,7 +83,7 @@ namespace WebService.Controllers
         public async Task Authenticate(UserModel user)
         {
             //RoleModel role = Mapper.Map<RoleModel>(await AccountService.GetRoleAsync(r => r.Name == "user"));
-            var role = user.Role;
+            
             //user.Role = role;
             var claims = new List<Claim>();
             Claim cl1 = new Claim(ClaimsIdentity.DefaultNameClaimType, user.Mail);

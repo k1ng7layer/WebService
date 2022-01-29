@@ -19,8 +19,9 @@ namespace DataAccesLayer.Repostitories
         }
         public async Task CreateAsync(Product item)
         {
-            if(!_dbContext.Products.Contains(item))
-            await _dbContext.Products.AddAsync(item);
+            var result = await _dbContext.Products.Where(p => p.ProductName == item.ProductName).FirstOrDefaultAsync();
+            if(result==null)
+                await _dbContext.Products.AddAsync(item);
         }
 
         public async Task DeleteAsync(int id)
@@ -35,47 +36,42 @@ namespace DataAccesLayer.Repostitories
             var product = await _dbContext.Products.Where(predicate).FirstOrDefaultAsync();
             return product;
         }
-            
 
-
-        public async Task<Product> GetAsync(int id)
+        public async Task<Product> FindById(int id)
         {
             var product = await _dbContext.Products.Where(p => p.Id == id).FirstOrDefaultAsync();
             return product;
-        }
-
-       
-
-       
-
-        public async Task UpdateAsync(Product item)
-        {
-            var product = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == item.Id);
-            Product newProduct = new Product()
-            {
-                ProductName = item.ProductName,
-                Category = item.Category,
-                Price = item.Price,
-                OnSale = item.OnSale,
-                Count = item.Count,
-            };
-            await DeleteAsync(product.Id);
-            await CreateAsync(newProduct);
         }
 
         public IQueryable<Product> GetAll()
         {
             return _dbContext.Products;
         }
-
-        public void DeleteAllByUserId(int userId)
-        {
-            
-        }
-
         public async Task AddRangeAsync(IEnumerable<Product> entities)
         {
             await _dbContext.Products.AddRangeAsync(entities);
         }
+
+        public void Update(Product item)
+        {
+            _dbContext.Products.Update(item);
+        }
+
+        public void DeleteRange(Expression<Func<Product, bool>> predicate)
+        {
+            _dbContext.Products.RemoveRange(_dbContext.Products.Where(predicate));
+        }
     }
+            
 }
+
+
+       
+
+       
+
+  
+
+
+      
+

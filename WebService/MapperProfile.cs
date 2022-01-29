@@ -29,6 +29,7 @@ namespace WebService
             CreateMap<CartBL, Cart>();
             CreateMap<CartBL, CartModel>();
             CreateMap<CartModel, CartBL>();
+            CreateMap<ProductBL, Product>();
 
             CreateMap<IQueryable<UserDTO>, IQueryable<UserBL>>();
             

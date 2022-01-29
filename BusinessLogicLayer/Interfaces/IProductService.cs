@@ -13,5 +13,6 @@ namespace BusinessLogicLayer.Interfaces
         Task AddProductAsync(ProductBL product);
         Task DeleteProductAsync(int id);
         IEnumerable<ProductBL> GetAll();
+        Task UpdateProductAsync(ProductBL product);
     }
 }

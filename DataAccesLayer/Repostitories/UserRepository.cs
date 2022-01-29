@@ -17,30 +17,27 @@ namespace DataAccesLayer.Repostitories
         {
             _dbContext = db;
         }
+
         public async Task CreateAsync(UserDTO item)
         {
-            
-            //var res = await _dbContext.Roles.FirstOrDefaultAsync(x =>x.Id==2);
-            //_dbContext.Entry(res).State = EntityState.Detached;
-             await _dbContext.Users.AddAsync(item);
+            var user = _dbContext.Users.Where(u => u.Mail == item.Mail).FirstOrDefaultAsync();
+            if(user==null)       
+                await _dbContext.Users.AddAsync(item);
         }
-            
 
         public async Task DeleteAsync(int id)
         {
-            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+            var user = await _dbContext.Users.FindAsync(id);
             if (user != null)
                 _dbContext.Users.Remove(user);
         }
-            
 
         public async  Task<UserDTO> FindAsync(Expression<Func<UserDTO, bool>> predicate)
         {
-            
-            return await _dbContext.Users.FirstOrDefaultAsync(predicate);
+            return await _dbContext.Users.Where(predicate).FirstOrDefaultAsync();
         }
-
-        public async Task<UserDTO> GetAsync(int id)
+            
+        public async Task<UserDTO> FindById(int id)
         {
             return await _dbContext.Users.FindAsync(id);
         }
@@ -50,19 +47,9 @@ namespace DataAccesLayer.Repostitories
             return await _dbContext.Users.ToListAsync();
         }
 
-        
-
         public IQueryable<UserDTO> Include(Expression<Func<UserDTO, RoleDTO>> expression)
         {
             return _dbContext.Users.Include(expression);
-        }
-
-        public async Task UpdateAsync(UserDTO item)
-        {
-            //var result = _dbContext.Users.FirstOrDefaultAsync(u => u.Mail == item.Mail);
-
-
-            _dbContext.Users.Update(item);
         }
 
         public IQueryable<UserDTO> GetAll()
@@ -70,17 +57,33 @@ namespace DataAccesLayer.Repostitories
             return _dbContext.Users;
         }
 
-        public void DeleteAllByUserId(int userId)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task AddRangeAsync(IEnumerable<UserDTO> entities)
         {
             await _dbContext.Users.AddRangeAsync(entities);
         }
+
+        public void Update(UserDTO item)
+        {
+            _dbContext.Users.Update(item);
+        }
+
+        public void DeleteRange(Expression<Func<UserDTO, bool>> predicate)
+        {
+            _dbContext.Users.RemoveRange(_dbContext.Users.Where(predicate));
+        }
+
     }
+            
 }
+
+
+            
+
+
+        
+
+
+      
       
 
        
